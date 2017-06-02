@@ -1,0 +1,28 @@
+{
+  "name": "pixi-of-life",
+  "version": "0.0.1",
+  "description": "John Conway's game of life with Pixi.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weblid/pixi-of-life.git"
+  },
+  "keywords": [
+    "Game",
+    "of",
+    "life",
+    "Pixi.js"
+  ],
+  "author": "Barry Mason <barrywebla@gmail.com> (Web_la)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/weblid/pixi-of-life/issues"
+  },
+  "homepage": "https://github.com/weblid/pixi-of-life#readme",
+  "dependencies": {
+    "pixi.js": "^4.5.2"
+  }
+}
