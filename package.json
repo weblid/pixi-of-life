@@ -4,7 +4,7 @@
   "description": "John Conway's game of life with Pixi.js",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --reporter spec"
+    "build": "webpack --config webpack.config.js"
   },
   "repository": {
     "type": "git",
@@ -24,5 +24,8 @@
   "homepage": "https://github.com/weblid/pixi-of-life#readme",
   "dependencies": {
     "pixi.js": "^4.5.2"
+  },
+  "devDependencies": {
+    "webpack": "^2.6.1"
   }
 }
