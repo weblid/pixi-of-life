@@ -43,6 +43,12 @@ function setUpEnvironment(element="body", width=800, height=600, options){
 
 function board(){
     
+    /**
+     * Defined size of grid squares
+     */
+
+    const square_size = 20;
+
     /** 
      * Holds references to all of the squares on the board
      */
@@ -89,7 +95,7 @@ function board(){
 
         while(draw){
             var sq = new square();
-            sq.add(col, row);
+            sq.add(col, row, square_size);
             this.squares.push(sq);
             
             if(sq.left > canvas.width){
@@ -205,12 +211,12 @@ function board(){
         this.squares.forEach(function(val, index){
             if(val.alive == true){
                 _this.graphics.beginFill(0xFF3333); // Purple
-                _this.graphics.drawRect(val.left, val.top, val.left+20, val.top+20);
+                _this.graphics.drawRect(val.left, val.top, val.left+square_size, val.top+square_size);
                 _this.graphics.endFill();
 
             } else {
                 _this.graphics.beginFill(0x000000); // Purple
-                _this.graphics.drawRect(val.left, val.top, val.left+20, val.top+20);
+                _this.graphics.drawRect(val.left, val.top, val.left+square_size, val.top+square_size);
                 _this.graphics.endFill();
             }
         });
@@ -299,17 +305,11 @@ function square(){
     this.top = null;
 
     /**
-     * Defined size of grid squares
-     */
-
-    const square_size = 20;
-
-    /**
      * Inititalises and configures a square
      * @var bool
      */
 
-    this.add = function(x,y){
+    this.add = function(x,y, square_size){
         this.x = x;
         this.y = y;
         this.left = x * square_size;
