@@ -1,13 +1,20 @@
 <html>
    <head>
      <title>webpack 2 demo</title>
+     <script src="dist/bundle.js"></script>
    </head>
    <body>
-     <script src="dist/bundle.js"></script>
+    
+
+    <div id="holder">
+
+    </div>
+
      <script type="text/javascript">
 
-        gol.init(); 
+        gol.init('holder', 1000, 600, {"backgroundColor" : "#00000"}); 
 
      </script>
    </body>
  </html>
+

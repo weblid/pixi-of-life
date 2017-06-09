@@ -1,38 +1,83 @@
+/**
+ * Globals
+ */
+
 var PIXI = require('pixi.js');
-var app = new PIXI.Application();
-var canvas = document.body.appendChild(app.view);
-canvas.style.width = "100%";
-canvas.style.height = "100%";
+var app;
+var canvas;
+
 /** 
- * The board which manages the squares
- * 
+ * Generic random number integer
+ *
+ * @param Int min int
+ * @param Int max int
+ *
+ * @return int
  */
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+/** 
+ * Inititalises the PIXI canvas and configures it.
+ *
+ * @param String element id to attach canvas to
+ * @param Int width of canvas
+ * @param Int height of canvas
+ * @param JSON Extra options
+ *
+ * @return array
+ */
+
+function setUpEnvironment(element="body", width=800, height=600, options){
+    app = new PIXI.Application({width: width, height:height});
+    elem = document.getElementById(element);
+    canvas = elem.appendChild(app.view);
+}
+
+/** 
+ * The board object which is manages the squares objects
+ *
+ */
 
 function board(){
-
+    
+    /** 
+     * Holds references to all of the squares on the board
+     */
+    
     this.squares = [];
+
+    /**
+     * The PIXI graphics object holder
+     */
 
     this.graphics = null;
 
+    /**
+     * Boots the repeating ticker which sets the timer for
+     * the nest tick in the heartbeat
+     */
+
     this.run = function(){
         var _this = this;
-
-        this.timerId = setTimeout(function(){
-            _this.tick();
-        }, 250);
+        this.timerId = setTimeout(function(){ _this.tick(); }, 250);
     }
+
+    /**
+     * Callback function for handling each tick 
+     */
 
     this.tick = function(){
         this.calculateGrid();
         this.redrawGrid();
         this.run();
-        
     }
+
+    /**
+     * Looks at the canvas size and builds the squares matrix
+     */
 
     this.buildGrid = function(){
         
@@ -61,6 +106,10 @@ function board(){
         }
     }
 
+    /**
+     * Which squares should we initially make live on the grid?
+     */
+
     this.populate = function(){
         var _this = this;
         
@@ -69,17 +118,13 @@ function board(){
             if(val.x > 15 && val.x < 30 && val.y > 10 && val.y < 20 && no ==  1){
                 val.birth();
             }
-        });
-        
-        /*
-        this.activate(20,20);
-        this.activate(21,21);
-        this.activate(19,22);
-        this.activate(20,22);
-        this.activate(21,22);
-        */
-        
+        });        
     }
+
+    /**
+     * Loops through this.squares[] and calculates wether that square should
+     * live, die or be born
+     */
 
     this.calculateGrid = function(){
 
@@ -108,6 +153,16 @@ function board(){
     
     }
 
+    /**
+     * Counts how many live squares there are in the 8 squares
+     * around any one particular square
+     *
+     * @param Int x
+     * @param Int y
+     *
+     * @return Int
+     */
+
     this.getSquaresAroundMatrix = function(x, y){
 
         var _this = this;
@@ -135,6 +190,13 @@ function board(){
         return results;
     }
 
+    /**
+     * Loops thorugh this.squares[] and renders teh canvas according
+     * to the x,y,alive attributes of each square object
+     *
+     * @return Bool
+     */
+
     this.redrawGrid = function(){
 
         var _this = this;
@@ -153,12 +215,21 @@ function board(){
             }
         });
 
-        app.stage.addChild(this.graphics);
+        return app.stage.addChild(this.graphics);
 
     }
 
+    /**
+     * Gets a individual square object from the board using
+     * the squares given matrix position in square spaces (not pixels)
+     *
+     * @param Int x
+     * @param Int y
+     *
+     * @return square
+     */
+
     this.getByMatrix = function(x,y){
-        
         var foundIndex = false;
 
         this.squares.forEach(function(val, index){
@@ -168,6 +239,16 @@ function board(){
         });
         return foundIndex;
     }
+
+    /**
+     * Makes an individual square on the board alive using
+     * its given x,y square position (not pixes position)
+     *
+     * @param Int x
+     * @param Int y
+     *
+     * @return square
+     */
 
     this.activate = function(x,y){
         var square = this.getByMatrix(x,y);
@@ -179,15 +260,54 @@ function board(){
  * Individual square objects which make the whole grid.
  * 
  */
+
 function square(){
 
+    /**
+     * Indicates if square is alive or dead
+     * @var bool
+     */
+
     this.alive = false;
+
+    /**
+     * Indicates which x square (in squares, not pixels)
+     * @var int
+     */
+
     this.x = null;
+
+    /**
+     * Indicates which y square (in squares, not pixels)
+     * @var int
+     */
+
     this.y = null;
+
+    /**
+     * Indicates how far from left in pixels (x)
+     * @var int
+     */
+
     this.left = null;
+
+    /**
+     * Indicates how far from top in pixels (x)
+     * @var int
+     */
+
     this.top = null;
 
+    /**
+     * Defined size of grid squares
+     */
+
     const square_size = 20;
+
+    /**
+     * Inititalises and configures a square
+     * @var bool
+     */
 
     this.add = function(x,y){
         this.x = x;
@@ -197,26 +317,53 @@ function square(){
         this.death();
     }
 
+    /**
+     * Makes square alive
+     *
+     * @return bool
+     */
+
     this.birth = function(){
-        this.alive = true;
+        return this.alive = true;
     }
 
+    /**
+     * Makes square dead
+     *
+     * @return bool
+     */
+
     this.death = function(){
-        this.alive = false;
+        return this.alive = false;
     }
 
 }
 
+/** 
+ * Exported modules
+ */
+
 module.exports = {
+
+    /**
+     * Holds the board object
+     */
 
     board : null,
 
-    init : function(){
+    /**
+     * Boot the project
+     */
+     
+    init : function(element, width, height, options){
+
+        setUpEnvironment(element, width, height, options);
+
         this.board = new board();
         this.board.buildGrid();
         this.board.populate();
         this.board.redrawGrid();
         this.board.run();
-    },
+    }
     
 }
